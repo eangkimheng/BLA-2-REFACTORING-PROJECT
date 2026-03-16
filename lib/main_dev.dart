@@ -8,22 +8,27 @@ import 'data/repositories/ride_preference/ride_preferences_repository.dart';
 import 'data/repositories/ride_preference/ride_preferences_repository_mock.dart';
 import 'data/repositories/ride/rides_repository.dart';
 import 'data/repositories/ride/rides_repository_mock.dart';
+import 'ui/states/ride_preferences_state.dart';
 
-List<SingleChildWidget> get devProviders => [
+List<SingleChildWidget> get devProviders {
+  final RidePreferenceRepository ridePreferenceRepository =RidePreferencesRepositoryMock();
+  return [
+    Provider<LocationsRepository>(
+      create: (context) => LocationsRepositoryMock(),
+    ),
 
-  Provider<LocationsRepository>(
-    create: (context) => LocationsRepositoryMock(),
-  ),
+    Provider<RidePreferenceRepository>(
+      create: (context) => RidePreferencesRepositoryMock(),
+    ),
 
-  Provider<RidePreferenceRepository>(
-    create: (context) => RidePreferencesRepositoryMock(),
-  ),
-
-  Provider<RidesRepository>(
-    create: (context) => RidesRepositoryMock(),
-  ),
-
-];
+    Provider<RidesRepository>(create: (context) => RidesRepositoryMock()),
+    ChangeNotifierProvider(
+      create: (context) => RidePreferenceState(
+        ridePreferenceRepository: ridePreferenceRepository,
+      ),
+    ),
+  ];
+}
 
 void main() {
   mainCommon(devProviders);
